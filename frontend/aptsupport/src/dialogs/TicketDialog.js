@@ -1,19 +1,33 @@
 import React from 'react';
 import Dialog from './Dialog';
-import axios from 'axios';
+import { createTicket, updateTicket } from '../utils/backend';
 
-const TicketDialog = ({ mode, onCancel }) => {
-  const handleCreate = async (data) => {
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/tickets/', data);
-      console.log('Ticket created:', response.data);
-    } catch (error) {
-      console.error('Error creating ticket:', error);
+const TicketDialog = ({action, onCancel }) => {
+  const handleCreate = async (data, resource) => {
+    const { title, description, category_id, subcategory_id, deadline } = data;
+  
+    if (!title || !description || !category_id || !subcategory_id || !deadline) {
+      console.error("All fields are required");
+      return;
     }
+  
+    try {
+      const response = await createTicket(title, description, category_id, subcategory_id, deadline);
+      console.log("Ticket created successfully:", response);
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+    }
+    onCancel()
   };
+  
 
-  const handleUpdate = (data) => {
-    console.log('Update Ticket:', data);
+  const handleUpdate = async (data) => {
+    try {
+      const response = await updateTicket(data.id, data.status, data.resolved);
+      console.log('Ticket updated:', response);
+    } catch (error) {
+      console.error('Error updating ticket:', error);
+    }
   };
 
   const dialogFields = [
@@ -26,13 +40,12 @@ const TicketDialog = ({ mode, onCancel }) => {
 
   return (
     <Dialog
-      title={mode === 'create' ? 'Create Ticket' : 'Update Ticket'}
+      title={action === 'create' ? 'Create Ticket' : 'Update Ticket'}
+      action={action}
       fields={dialogFields}
       onCreate={handleCreate}
       onUpdate={handleUpdate}
       onCancel={onCancel}
-      mode={mode}
-      resource="ticket"
     />
   );
 };

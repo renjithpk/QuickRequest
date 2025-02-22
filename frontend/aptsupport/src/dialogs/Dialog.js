@@ -19,12 +19,15 @@ import './Dialog.css';
 // - data: the data to pass to the onCreate or onUpdate function.
 // - resource: the resource type (e.g., 'category', 'subcategory').
 
-const Dialog = ({ mode, onCancel, onCreate, onUpdate, title, fields, data, resource }) => {
+const Dialog = ({ action, onCancel, onCreate, onUpdate, title, fields, data, resource }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (mode === 'create' && onCreate) {
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData.entries());
+
+    if (action === 'create' && onCreate) {
       onCreate(data, resource);
-    } else if (mode === 'update' && onUpdate) {
+    } else if (action === 'update' && onUpdate) {
       onUpdate(data, resource);
     }
   };
@@ -49,8 +52,8 @@ const Dialog = ({ mode, onCancel, onCreate, onUpdate, title, fields, data, resou
           ))}
           <div className="dialog-actions">
             <button type="button" onClick={onCancel}>Cancel</button>
-            {mode === 'create' && <button type="submit">Create</button>}
-            {mode === 'update' && <button type="submit">Update</button>}
+            {action === 'create' && <button type="submit">Create</button>}
+            {action === 'update' && <button type="submit">Update</button>}
           </div>
         </form>
       </div>

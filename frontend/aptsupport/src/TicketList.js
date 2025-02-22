@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import axios from "axios";
+import { fetchTickets } from './utils/backend';
 import TableView from './TableView';
 
-const TicketList = ({onRowClick}) => {
+const TicketList = ({ onRowClick }) => {
   const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/tickets/").then((response) => {
-      setTickets(response.data);
-    });
+    const getTickets = async () => {
+      try {
+        const data = await fetchTickets();
+        setTickets(data);
+      } catch (error) {
+        console.error('Error fetching tickets:', error);
+      }
+    };
+
+    getTickets();
   }, []);
 
   const columns = [

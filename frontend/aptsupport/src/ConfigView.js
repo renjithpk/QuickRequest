@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { fetchCategories, fetchSubcategories } from './utils/backend';
 import TableView from './TableView';
 
 const ConfigView = () => {
@@ -8,13 +8,10 @@ const ConfigView = () => {
   useEffect(() => {
     const fetchCategoriesAndSubcategories = async () => {
       try {
-        const [categoriesResponse, subcategoriesResponse] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/categories/"),
-          axios.get("http://127.0.0.1:8000/subcategories/")
+        const [categories, subcategories] = await Promise.all([
+          fetchCategories(),
+          fetchSubcategories()
         ]);
-
-        const categories = categoriesResponse.data;
-        const subcategories = subcategoriesResponse.data;
 
         const mergedData = subcategories.map(subcategory => {
           const category = categories.find(cat => cat.id === subcategory.category_id);
