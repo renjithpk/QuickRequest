@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import TableView from './TableView';
 
-const TicketList = () => {
+const TicketList = ({onRowClick}) => {
   const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const TicketList = () => {
 
   return (
     <div>
-      <TableView columns={columns} data={tickets} />
+      <TableView columns={columns} data={tickets} onRowClick={onRowClick} />
     </div>
   );
 };

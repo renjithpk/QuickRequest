@@ -6,78 +6,26 @@ import TicketDialog from './dialogs/TicketDialog';
 import CategoryDialog from './dialogs/CategoryDialog';
 import SubCategoryDialog from './dialogs/SubCategoryDialog';
 
-import axios from 'axios';
-
 function App() {
   const [showConfig, setShowConfig] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
-  const [dialogMode, setDialogMode] = useState('create');
-  const [dialogResource, setDialogResource] = useState('ticket');
+
+  const [dialogType, setDialogType] = useState(null);
 
   const toggleConfigView = () => {
     setShowConfig(!showConfig);
   };
 
   const openDialog = (mode, resource) => {
-    setDialogMode(mode);
-    setDialogResource(resource);
-    setShowDialog(true);
+    setDialogType(resource);
   };
 
-  const closeDialog = () => {
-    setShowDialog(false);
+  const handleTicketSelection = (ticket) => {
+    console.log('Selected ticket:', ticket);
   };
 
-  const addNewTicket = async (data) => {
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/tickets/', data);
-      console.log('Ticket created:', response.data);
-      // Optionally, refresh the ticket list or update the state
-    } catch (error) {
-      console.error('Error creating ticket:', error);
-    }
-  };
-
-  const addNewCategory = (data) => {
-    console.log('Add New Category:', data);
-    // Add logic to create a new category
-  };
-
-  const addNewSubcategory = (data) => {
-    console.log('Add New Subcategory:', data);
-    // Add logic to create a new subcategory
-  };
-
-  const handleCreate = (data, resource) => {
-    if (!resource) {
-      console.error('Resource is undefined');
-      return;
-    }
-    const [resourceType] = resource.split('|');
-    switch (resourceType) {
-      case 'ticket':
-        addNewTicket(data);
-        break;
-      case 'category':
-        addNewCategory(data);
-        break;
-      case 'subcategory':
-        addNewSubcategory(data);
-        break;
-      default:
-        console.error('Unknown resource type:', resourceType);
-    }
-    closeDialog();
-  };
-
-  const handleUpdate = (data, resource) => {
-    if (!resource) {
-      console.error('Resource is undefined');
-      return;
-    }
-    console.log(`Update ${resource}:`, data);
-    closeDialog();
-  };
+  const handleDialogCancel = () => {
+    setDialogType(null);
+  }
 
   return (
     <div className="App">
@@ -93,31 +41,10 @@ function App() {
         <button onClick={() => openDialog('create', 'subcategory')}>Add New Subcategory</button>
       </div>
       {showConfig && <ConfigView />}
-      {!showConfig && <TicketList />}
-      {showDialog && dialogResource === 'ticket' && (
-        <TicketDialog
-          mode={dialogMode}
-          onCancel={closeDialog}
-          onCreate={handleCreate}
-          onUpdate={handleUpdate}
-        />
-      )}
-      {showDialog && dialogResource === 'category' && (
-        <CategoryDialog
-          mode={dialogMode}
-          onCancel={closeDialog}
-          onCreate={handleCreate}
-          onUpdate={handleUpdate}
-        />
-      )}
-      {showDialog && dialogResource === 'subcategory' && (
-        <SubCategoryDialog
-          mode={dialogMode}
-          onCancel={closeDialog}
-          onCreate={handleCreate}
-          onUpdate={handleUpdate}
-        />
-      )}
+      {!showConfig && <TicketList onRowClick={handleTicketSelection} />}
+      {dialogType === 'ticket' && (<TicketDialog onCancel={handleDialogCancel} />)}
+      {dialogType === 'category' && (<CategoryDialog onCancel={handleDialogCancel} />)}
+      {dialogType === 'subcategory' && (<SubCategoryDialog onCancel={handleDialogCancel} />)}
     </div>
   );
 }

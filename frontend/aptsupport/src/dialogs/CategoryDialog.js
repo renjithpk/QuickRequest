@@ -1,15 +1,13 @@
 import React from 'react';
 import Dialog from './Dialog';
 
-const CategoryDialog = ({ mode, onCancel, onCreate, onUpdate }) => {
+const CategoryDialog = ({mode, onCancel}) => {
   const handleCreate = (data) => {
     console.log('Add New Category:', data);
-    onCreate();
   };
 
   const handleUpdate = (data) => {
     console.log('Update Category:', data);
-    onUpdate();
   };
 
   const dialogFields = [
@@ -21,9 +19,9 @@ const CategoryDialog = ({ mode, onCancel, onCreate, onUpdate }) => {
     <Dialog
       title={mode === 'create' ? 'Create Category' : 'Update Category'}
       fields={dialogFields}
-      onCancel={onCancel}
       onCreate={handleCreate}
       onUpdate={handleUpdate}
+      onCancel={onCancel}
       mode={mode}
       resource="category"
     />

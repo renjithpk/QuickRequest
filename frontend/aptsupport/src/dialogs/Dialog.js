@@ -1,12 +1,27 @@
 import React from 'react';
 import './Dialog.css';
 
-const Dialog = ({ title, fields, onCancel, onCreate, onUpdate, mode, resource }) => {
+// Usage
+// The Dialog component can be used to create or update a resource.
+// Props:
+// - mode: 'create' or 'update' to specify the mode of the dialog.
+// - onCreate: function to call when creating a new resource.
+// - onUpdate: function to call when updating an existing resource.
+// - onCancel: function to call when the dialog is canceled.
+// - title: the title of the dialog.
+// - fields: an array of field objects to render in the form. Each field object should have the following properties:
+//   - name: the name of the field.
+//   - label: the label of the field.
+//   - type: the type of the input (e.g., 'text', 'number').
+//   - required: whether the field is required.
+//   - default: the default value of the field.
+//   - helpText: optional help text to display below the field.
+// - data: the data to pass to the onCreate or onUpdate function.
+// - resource: the resource type (e.g., 'category', 'subcategory').
+
+const Dialog = ({ mode, onCancel, onCreate, onUpdate, title, fields, data, resource }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
-    const formData = new FormData(event.target);
-    const data = Object.fromEntries(formData.entries());
-
     if (mode === 'create' && onCreate) {
       onCreate(data, resource);
     } else if (mode === 'update' && onUpdate) {
@@ -26,9 +41,10 @@ const Dialog = ({ title, fields, onCancel, onCreate, onUpdate, mode, resource })
                 type={field.type}
                 name={field.name}
                 id={field.name}
-                defaultValue={field.defaultValue || ''}
+                defaultValue={field.default || ''}
                 required={field.required}
               />
+              {field.helpText && <small>{field.helpText}</small>}
             </div>
           ))}
           <div className="dialog-actions">

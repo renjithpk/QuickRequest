@@ -1,15 +1,13 @@
 import React from 'react';
 import Dialog from './Dialog';
 
-const SubCategoryDialog = ({ mode, onCancel, onCreate, onUpdate }) => {
+const SubCategoryDialog = ({ mode,onCancel }) => {
   const handleCreate = (data) => {
     console.log('Add New Subcategory:', data);
-    onCreate();
   };
 
   const handleUpdate = (data) => {
     console.log('Update Subcategory:', data);
-    onUpdate();
   };
 
   const dialogFields = [
@@ -21,10 +19,10 @@ const SubCategoryDialog = ({ mode, onCancel, onCreate, onUpdate }) => {
     <Dialog
       title={mode === 'create' ? 'Create Subcategory' : 'Update Subcategory'}
       fields={dialogFields}
-      onCancel={onCancel}
       onCreate={handleCreate}
       onUpdate={handleUpdate}
       mode={mode}
+      onCancel={onCancel}
       resource="subcategory"
     />
   );

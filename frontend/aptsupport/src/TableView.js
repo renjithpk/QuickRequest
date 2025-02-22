@@ -1,7 +1,13 @@
 import React from 'react';
 import './TableView.css'; // Import the CSS file
 
-const TableView = ({ columns, data }) => {
+const TableView = ({ columns, data, onRowClick }) => {
+  const handleRowClick = (row) => {
+    if (onRowClick) {
+      onRowClick(row);
+    }
+  };
+
   return (
     <div className="table-view-container">
       <table className="table-view">
@@ -14,7 +20,7 @@ const TableView = ({ columns, data }) => {
         </thead>
         <tbody>
           {data.map((row, rowIndex) => (
-            <tr key={rowIndex}>
+            <tr key={rowIndex} onClick={() => handleRowClick(row)}>
               {columns.map((column) => (
                 <td key={column.id}>{row[column.accessorKey]}</td>
               ))}
