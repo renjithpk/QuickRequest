@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
 from app.routers import categories, subcategories, tickets
+from app.routers.whatsapp import router as whatsapp_router
 
 # FastAPI instance
 app = FastAPI()
@@ -21,3 +22,4 @@ Base.metadata.create_all(bind=engine)
 app.include_router(categories.router)
 app.include_router(subcategories.router)
 app.include_router(tickets.router)
+app.include_router(whatsapp_router)
