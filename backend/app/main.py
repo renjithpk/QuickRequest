@@ -5,8 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.sql import and_
 
 from .database import get_db, engine
-from .models import Category, SubCategory, Ticket
-from .models import CategoryCreate, SubCategoryCreate, TicketCreate, TicketUpdate
+from .models.models import Category, SubCategory, Ticket
+from .models.models import CategoryCreate, SubCategoryCreate, TicketCreate, TicketUpdate
 
 # FastAPI instance
 app = FastAPI()
