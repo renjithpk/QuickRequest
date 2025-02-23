@@ -29,5 +29,4 @@ pnpm-debug.log*
 .idea/
 .DS_Store
 
-
-backend/test.db
+backend/tests/test.db
