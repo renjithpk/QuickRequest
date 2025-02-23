@@ -11,3 +11,6 @@ def create_subcategory(db: Session, subcategory: SubCategoryCreate):
 
 def list_subcategories(db: Session):
     return db.query(SubCategory).all()
+    
+def list_subcategories_by_category(db: Session, category_id: int):
+    return db.query(SubCategory).filter(SubCategory.category_id == category_id).all()
