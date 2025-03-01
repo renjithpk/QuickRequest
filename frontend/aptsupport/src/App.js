@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import './App.css';
 import TicketList from './TicketList';
 import ConfigView from './ConfigView';
-import TicketDialog from './dialogs/TicketDialog';
-import CategoryDialog from './dialogs/CategoryDialog';
-import SubCategoryDialog from './dialogs/SubCategoryDialog';
+import TicketDialog from './dialogs/TicketDialog.tsx';
+import CategoryDialog from './dialogs/CategoryDialog.tsx';
+import SubCategoryDialog from './dialogs/SubCategoryDialog.tsx';
 
 function App() {
   const [showConfig, setShowConfig] = useState(false);
