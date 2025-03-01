@@ -1,5 +1,5 @@
 import React from 'react';
-import Dialog from './Dialog';
+import Dialog from './Dialog.tsx';
 
 const CategoryDialog = ({mode, onCancel}) => {
   const handleCreate = (data) => {

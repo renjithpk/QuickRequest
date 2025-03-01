@@ -1,28 +1,30 @@
 import React from 'react';
 import './Dialog.css';
 
-// Usage
-// The Dialog component can be used to create or update a resource.
-// Props:
-// - mode: 'create' or 'update' to specify the mode of the dialog.
-// - onCreate: function to call when creating a new resource.
-// - onUpdate: function to call when updating an existing resource.
-// - onCancel: function to call when the dialog is canceled.
-// - title: the title of the dialog.
-// - fields: an array of field objects to render in the form. Each field object should have the following properties:
-//   - name: the name of the field.
-//   - label: the label of the field.
-//   - type: the type of the input (e.g., 'text', 'number').
-//   - required: whether the field is required.
-//   - default: the default value of the field.
-//   - helpText: optional help text to display below the field.
-// - data: the data to pass to the onCreate or onUpdate function.
-// - resource: the resource type (e.g., 'category', 'subcategory').
+interface Field {
+  name: string;
+  label: string;
+  type: string;
+  required: boolean;
+  default?: string | number;
+  helpText?: string;
+}
 
-const Dialog = ({ action, onCancel, onCreate, onUpdate, onDelete, title, fields, resource }) => {
-  const handleSubmit = (event) => {
+interface DialogProps {
+  action: 'create' | 'update';
+  onCancel: () => void;
+  onCreate?: (data: Record<string, any>, resource: string) => void;
+  onUpdate?: (data: Record<string, any>, resource: string) => void;
+  onDelete?: (resource: string) => void;
+  title: string;
+  fields: Field[];
+  resource: string;
+}
+
+const Dialog: React.FC<DialogProps> = ({ action, onCancel, onCreate, onUpdate, onDelete, title, fields, resource }) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.target);
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
     if (action === 'create' && onCreate) {
@@ -57,7 +59,9 @@ const Dialog = ({ action, onCancel, onCreate, onUpdate, onDelete, title, fields,
             <button type="button" onClick={onCancel} className="cancel-button">Cancel</button>
             {action === 'create' && <button type="submit" className="create-button">Create</button>}
             {action === 'update' && <button type="submit" className="update-button">Update</button>}
-            {action === 'update' && onDelete && <button type="button" onClick={() => onDelete(resource)} className="delete-button">Delete</button>}
+            {action === 'update' && onDelete && (
+              <button type="button" onClick={() => onDelete(resource)} className="delete-button">Delete</button>
+            )}
           </div>
         </form>
       </div>

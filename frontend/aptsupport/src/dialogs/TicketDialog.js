@@ -1,5 +1,5 @@
 import React from 'react';
-import Dialog from './Dialog';
+import Dialog from './Dialog.tsx';
 import { createTicket, updateTicket } from '../utils/backend.ts';
 
 const TicketDialog = ({action, onCancel, defaultValues }) => {
