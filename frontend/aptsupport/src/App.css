@@ -39,3 +39,34 @@
   display: flex;
   gap: 8px; /* Controls space between buttons inside each div */
 }
+
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #1204e0;
+  margin-bottom: 10px;
+}
+
+.tab-button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  margin-right: 4px;
+  border-radius: 8px 8px 0 0;
+  color: #5a5959;
+}
+
+.tab-button.active {
+  background-color: #0f1eec;
+  border-bottom: 2px solid #fff;
+  font-weight: bold;
+  color: #ffffff;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tab-button:hover:not(.active) {
+  background-color: #e0e0e0;
+}
+

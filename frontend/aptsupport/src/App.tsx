@@ -8,15 +8,12 @@ import CategoryDialog from "./dialogs/CategoryDialog.tsx";
 import SubCategoryDialog from "./dialogs/SubCategoryDialog.tsx";
 import { Category, Subcategory, Ticket } from "./utils/backend.ts";
 
-
 // Define types for dialogs
 type DialogType = "ticket" | "category" | "subcategory";
 type DialogAction = "create" | "update";
 
-// Define type for dialog default values
 type DialogDefaultValues = Partial<Ticket> | Partial<Category> | Partial<Subcategory>;
 
-// Define interface for dialog data
 interface DialogData {
   type: DialogType;
   action: DialogAction;
@@ -24,31 +21,11 @@ interface DialogData {
 }
 
 const App: React.FC = () => {
-  const [showConfig, setShowConfig] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<"tickets" | "categories">("tickets");
   const [dialogData, setDialogData] = useState<DialogData | null>(null);
-
-  const toggleConfigView = () => {
-    setShowConfig((prev) => !prev);
-  };
 
   const openDialog = (action: DialogAction, type: DialogType, defaultValues?: DialogDefaultValues) => {
     setDialogData({ type, action, defaultValues });
-  };
-
-  // Handle row selection in TicketList
-  const handleTicketSelection = (ticket: Ticket) => {
-    console.log("Selected ticket:", ticket);
-    openDialog("update", "ticket", ticket);
-  };
-
-  const handleCategorySelection = (category: Category) => {
-    console.log("Selected category:", category);
-    openDialog("update", "category", category);
-  };
-
-  const handleSubcategorySelection = (subCategory: Subcategory) => {
-    console.log("Selected subCategory:", subCategory);
-    openDialog("update", "subcategory", subCategory);
   };
 
   const handleDialogCancel = () => {
@@ -61,39 +38,33 @@ const App: React.FC = () => {
         <h2>Support Tickets Management</h2>
       </header>
 
-      
-      <div className="app-controls">
-        <div>
-          <button onClick={toggleConfigView}>
-            {showConfig ? "View Tickets" : "View Categories"}
-          </button>
-        </div>
+      <div className="tabs">
+        <button className={`tab-button ${activeTab === "tickets" ? "active" : ""}`} onClick={() => setActiveTab("tickets")}>Tickets</button>
+        <button className={`tab-button ${activeTab === "categories" ? "active" : ""}`} onClick={() => setActiveTab("categories")}>Configs</button>
+      </div>
 
-        <label>Actions :</label>
+      <div className="app-controls">
+        <label>Actions:</label>
         <div>
-          {!showConfig && (
-            <button onClick={() => openDialog("create", "ticket")}>
-              Add New Ticket
-            </button>
+          {activeTab === "tickets" && (
+            <button onClick={() => openDialog("create", "ticket")}> New Ticket</button>
           )}
-          {showConfig && (
+          {activeTab === "categories" && (
             <>
-              <button onClick={() => openDialog("create", "category")}>
-                Add New Category
-              </button>
-              <button onClick={() => openDialog("create", "subcategory")}>
-                Add New Subcategory
-              </button>
+              <button onClick={() => openDialog("create", "category")}> New Category</button>
+              <button onClick={() => openDialog("create", "subcategory")}> New Subcategory</button>
             </>
           )}
         </div>
       </div>
 
-      {showConfig && <>
-        <CategoryTable onRowClick={handleCategorySelection} />
-        <SubCategoryTable onRowClick={handleSubcategorySelection} />
-      </>}
-      {!showConfig && <TicketsTable onRowClick={handleTicketSelection} />}
+      {activeTab === "tickets" && <TicketsTable onRowClick={(ticket) => openDialog("update", "ticket", ticket)} />}
+      {activeTab === "categories" && (
+        <>
+          <CategoryTable onRowClick={(category) => openDialog("update", "category", category)} />
+          <SubCategoryTable onRowClick={(subCategory) => openDialog("update", "subcategory", subCategory)} />
+        </>
+      )}
 
       {dialogData && dialogData.type === "ticket" && (
         <TicketDialog action={dialogData.action} onCancel={handleDialogCancel} defaultValues={dialogData.defaultValues as Partial<Ticket>} />
