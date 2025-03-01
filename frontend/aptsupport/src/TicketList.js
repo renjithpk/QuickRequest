@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchTickets } from './utils/backend';
+import { fetchTickets } from './utils/backend.ts';
 import TableView from './TableView';
 
 const TicketList = ({ onRowClick }) => {

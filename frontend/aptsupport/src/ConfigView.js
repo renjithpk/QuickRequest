@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchCategories, fetchSubcategories } from './utils/backend';
+import { fetchCategories, fetchSubcategories } from './utils/backend.ts';
 import TableView from './TableView';
 
 const ConfigView = () => {
