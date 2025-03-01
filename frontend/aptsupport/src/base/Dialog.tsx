@@ -1,7 +1,7 @@
 import React from "react";
 import "./Dialog.css";
 
-interface Field {
+ interface Field {
   name: string;
   label: string;
   type: string;
@@ -76,4 +76,7 @@ const Dialog: React.FC<DialogProps> = ({ action, onCancel, onCreate, onUpdate, o
   );
 };
 
-export default Dialog;
+export {
+  Field,
+  Dialog
+} 

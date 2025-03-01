@@ -1,8 +1,21 @@
-import React from 'react';
-import './TableView.css'; // Import the CSS file
+import React from "react";
+import "./Table.css"; // Import the CSS file
 
-const TableView = ({ columns, data, onRowClick }) => {
-  const handleRowClick = (row) => {
+// Define types for column and data
+interface Column {
+  id: string;
+  header: string;
+  accessorKey: string;
+}
+
+interface TableViewProps {
+  columns: Column[];
+  data: Record<string, any>[]; // Array of objects
+  onRowClick?: (row: Record<string, any>) => void;
+}
+
+const TableView: React.FC<TableViewProps> = ({ columns, data, onRowClick }) => {
+  const handleRowClick = (row: Record<string, any>) => {
     if (onRowClick) {
       onRowClick(row);
     }

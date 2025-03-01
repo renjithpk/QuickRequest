@@ -1,28 +1,32 @@
 import React from "react";
-import Dialog from "./Dialog.tsx";
+import { Dialog, Field } from "../base/Dialog.tsx";
+import { Category } from "../utils/backend.ts";
 
-// Define props interface
+// CategoryDialog Component
 interface CategoryDialogProps {
   action: "create" | "update";
   onCancel: () => void;
+  defaultValues?: Partial<Category>;
 }
 
-// Component
-const CategoryDialog: React.FC<CategoryDialogProps> = ({ action, onCancel }) => {
-  // Function to handle category creation
+const CategoryDialog: React.FC<CategoryDialogProps> = ({ action, onCancel, defaultValues }) => {
   const handleCreate = (data: Record<string, any>) => {
     console.log("Add New Category:", data);
   };
 
-  // Function to handle category update
   const handleUpdate = (data: Record<string, any>) => {
     console.log("Update Category:", data);
+    onCancel()
   };
 
-  // Fields for dialog form
-  const dialogFields: { name: string; label: string; type: string; required: boolean }[] = [
-    { name: "name", label: "Name", type: "text", required: true },
-    { name: "description", label: "Description", type: "text", required: true },
+  const handleDelete = (data: Record<string, any>) => {
+    console.log("Delete Category:", data);
+    onCancel()
+  };
+
+
+  const dialogFields: Field[] = [
+    { name: "name", label: "Name", type: "text", required: true, default: defaultValues?.name }
   ];
 
   return (
@@ -31,6 +35,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ action, onCancel }) => 
       fields={dialogFields}
       onCreate={handleCreate}
       onUpdate={handleUpdate}
+      onDelete={handleDelete}
       onCancel={onCancel}
       action={action}
     />

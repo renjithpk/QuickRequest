@@ -1,18 +1,12 @@
 import React from "react";
-import Dialog from "./Dialog.tsx";
-import { createTicket, updateTicket } from "../utils/backend.ts";
+import {Dialog, Field} from "../base/Dialog.tsx";
+import { createTicket, updateTicket, Ticket } from "../utils/backend.ts";
 
 // Define props interface
 interface TicketDialogProps {
   action: "create" | "update";
   onCancel: () => void;
-  defaultValues?: {
-    title?: string;
-    description?: string;
-    category_id?: number;
-    subcategory_id?: number;
-    deadline?: string;
-  };
+  defaultValues?: Partial<Ticket>;
 }
 
 // Component
@@ -43,6 +37,7 @@ const TicketDialog: React.FC<TicketDialogProps> = ({ action, onCancel, defaultVa
     } catch (error) {
       console.error("Error updating ticket:", error);
     }
+    onCancel();
   };
 
   // Function to handle ticket deletion (if needed)
@@ -51,7 +46,7 @@ const TicketDialog: React.FC<TicketDialogProps> = ({ action, onCancel, defaultVa
   };
 
   // Fields for dialog form
-  const dialogFields: { name: string; label: string; type: string; required: boolean; default?: any }[] = [
+  const dialogFields: Field[] = [
     { name: "title", label: "Title", type: "text", required: true, default: defaultValues?.title },
     { name: "description", label: "Description", type: "text", required: true, default: defaultValues?.description },
     { name: "category_id", label: "Category ID", type: "number", required: true, default: defaultValues?.category_id },

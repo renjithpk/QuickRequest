@@ -89,5 +89,8 @@ export {
     deleteTicket,
     fetchCategories,
     fetchSubcategories,
-    fetchTickets
+    fetchTickets,
+    Ticket,
+    Category,
+    Subcategory,
 };
