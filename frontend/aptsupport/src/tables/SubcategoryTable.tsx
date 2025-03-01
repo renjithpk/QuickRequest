@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { fetchSubcategories } from "../utils/backend.ts";
+import { fetchSubcategories, Subcategory } from "../utils/backend.ts";
 import TableView from "../base/Table.tsx";
 
-interface Subcategory {
-  id: number;
-  name: string;
-  category_id: number;
-}
+
 
 interface SubCategoryTableProps {
   onRowClick?: (subcategory: Subcategory) => void;
+  reloadTrigger?: boolean;
 }
 
-const SubCategoryTable: React.FC<SubCategoryTableProps> = ({ onRowClick }) => {
+const SubCategoryTable: React.FC<SubCategoryTableProps> = ({ onRowClick, reloadTrigger }) => {
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
 
   useEffect(() => {
@@ -25,7 +22,7 @@ const SubCategoryTable: React.FC<SubCategoryTableProps> = ({ onRowClick }) => {
       }
     };
     fetchData();
-  }, []);
+  }, [reloadTrigger]);
 
   const columns = [
     { id: "id", header: "ID", accessorKey: "id" },

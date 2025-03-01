@@ -23,6 +23,9 @@ interface DialogData {
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"tickets" | "categories">("tickets");
   const [dialogData, setDialogData] = useState<DialogData | null>(null);
+  const [reloadTickets, setReloadTickets] = useState(false);
+  const [reloadCategories, setReloadCategories] = useState(false);
+  const [reloadSubCategories, setReloadSubCategories] = useState(false);
 
   const openDialog = (action: DialogAction, type: DialogType, defaultValues?: DialogDefaultValues) => {
     setDialogData({ type, action, defaultValues });
@@ -30,6 +33,16 @@ const App: React.FC = () => {
 
   const handleDialogCancel = () => {
     setDialogData(null);
+    if (dialogData?.type === "ticket") {
+      setReloadTickets(prev => !prev);
+    }
+    if (dialogData?.type === "category") {
+      setReloadCategories(prev => !prev);
+    }
+    if (dialogData?.type === "subcategory") {
+      setReloadSubCategories(prev => !prev);
+    }
+
   };
 
   return (
@@ -58,11 +71,16 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {activeTab === "tickets" && <TicketsTable onRowClick={(ticket) => openDialog("update", "ticket", ticket)} />}
+      {activeTab === "tickets" && (
+        <TicketsTable
+          onRowClick={(ticket) => openDialog("update", "ticket", ticket)}
+          reloadTrigger={reloadTickets}   // Step 3: Pass reload state as a prop
+        />
+      )}
       {activeTab === "categories" && (
         <>
-          <CategoryTable onRowClick={(category) => openDialog("update", "category", category)} />
-          <SubCategoryTable onRowClick={(subCategory) => openDialog("update", "subcategory", subCategory)} />
+          <CategoryTable onRowClick={(category) => openDialog("update", "category", category)} reloadTrigger={reloadCategories} />
+          <SubCategoryTable onRowClick={(subCategory) => openDialog("update", "subcategory", subCategory)} reloadTrigger={reloadSubCategories} />
         </>
       )}
 

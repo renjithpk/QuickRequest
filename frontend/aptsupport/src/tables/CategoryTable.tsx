@@ -6,22 +6,24 @@ import TableView from "../base/Table.tsx";
 
 interface CategoryTableProps {
   onRowClick?: (category: Category) => void;
+  reloadTrigger?: boolean;
 }
 
-const CategoryTable: React.FC<CategoryTableProps> = ({ onRowClick }) => {
+const CategoryTable: React.FC<CategoryTableProps> = ({ onRowClick, reloadTrigger }) => {
   const [categories, setCategories] = useState<Category[]>([]);
 
+  const getCategories = async () => {
+    try {
+      const data = await fetchCategories();
+      setCategories(data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchCategories();
-        setCategories(data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-    fetchData();
-  }, []);
+    getCategories();
+  }, [reloadTrigger]);
 
   const columns = [
     { id: "id", header: "ID", accessorKey: "id" },

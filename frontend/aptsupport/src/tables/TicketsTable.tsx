@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { fetchTickets, Ticket } from "../utils/backend.ts";
 import TableView from "../base/Table.tsx";
 
-
 // Define column type
 interface Column {
   id: string;
@@ -13,23 +12,30 @@ interface Column {
 // Define component props
 interface TicketsTableProps {
   onRowClick?: (ticket: Ticket) => void;
+  reloadTrigger?: boolean;
 }
 
-const TicketsTable: React.FC<TicketsTableProps> = ({ onRowClick }) => {
+const TicketsTable: React.FC<TicketsTableProps> = ({ onRowClick, reloadTrigger }) => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
 
-  useEffect(() => {
-    const getTickets = async () => {
-      try {
-        const data: Ticket[] = await fetchTickets();
-        setTickets(data);
-      } catch (error) {
-        console.error("Error fetching tickets:", error);
-      }
-    };
+  const getTickets = async () => {    // Extracted getTickets to a separate function
+    try {
+      const data: Ticket[] = await fetchTickets();
+      setTickets(data);
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+    }
+  };
 
-    getTickets();
+  useEffect(() => {
+    getTickets();  // Initial fetch
   }, []);
+
+  useEffect(() => {
+    if (reloadTrigger !== undefined) {
+      getTickets();  // Re-fetch when reloadTrigger changes
+    }
+  }, [reloadTrigger]);
 
   const columns: Column[] = [
     { id: "id", header: "ID", accessorKey: "id" },
