@@ -11,6 +11,7 @@ function App() {
 
   const [dialogType, setDialogType] = useState(null);
   const [dialogAction, setDialogAction] = useState(null);
+  const [defaultValues, setDefaultValues] = useState(null)
 
   const toggleConfigView = () => {
     setShowConfig(!showConfig);
@@ -27,6 +28,7 @@ function App() {
 
   const handleTicketSelection = (ticket) => {
     console.log('Selected ticket:', ticket);
+    setDefaultValues(ticket)
     openDialog('update', 'ticket')
   };
 
@@ -49,7 +51,7 @@ function App() {
       </div>
       {showConfig && <ConfigView />}
       {!showConfig && <TicketList onRowClick={handleTicketSelection} />}
-      {dialogType === 'ticket' && (<TicketDialog action = {dialogAction} onCancel={handleDialogCancel} />)}
+      {dialogType === 'ticket' && (<TicketDialog action = {dialogAction} onCancel={handleDialogCancel} defaultValues={defaultValues}/>)}
       {dialogType === 'category' && (<CategoryDialog action = {dialogAction} onCancel={handleDialogCancel} />)}
       {dialogType === 'subcategory' && (<SubCategoryDialog action = {dialogAction} onCancel={handleDialogCancel} />)}
     </div>

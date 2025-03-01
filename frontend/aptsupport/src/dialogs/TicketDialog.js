@@ -2,7 +2,7 @@ import React from 'react';
 import Dialog from './Dialog';
 import { createTicket, updateTicket } from '../utils/backend';
 
-const TicketDialog = ({action, onCancel }) => {
+const TicketDialog = ({action, onCancel, defaultValues }) => {
   const handleCreate = async (data, resource) => {
     const { title, description, category_id, subcategory_id, deadline } = data;
   
@@ -35,11 +35,11 @@ const TicketDialog = ({action, onCancel }) => {
   };
   
   const dialogFields = [
-    { name: 'title', label: 'Title', type: 'text', required: true },
-    { name: 'description', label: 'Description', type: 'text', required: true },
-    { name: 'category_id', label: 'Category ID', type: 'number', required: true },
-    { name: 'subcategory_id', label: 'Subcategory ID', type: 'number', required: true },
-    { name: 'deadline', label: 'Deadline', type: 'datetime-local', required: true },
+    { name: 'title', label: 'Title', type: 'text', required: true, default: defaultValues?.title },
+    { name: 'description', label: 'Description', type: 'text', required: true, default: defaultValues?.description },
+    { name: 'category_id', label: 'Category ID', type: 'number', required: true, default: defaultValues?.category_id },
+    { name: 'subcategory_id', label: 'Subcategory ID', type: 'number', required: true, default: defaultValues?.subcategory_id },
+    { name: 'deadline', label: 'Deadline', type: 'datetime-local', required: true, default: defaultValues?.deadline },
   ];
 
   return (
