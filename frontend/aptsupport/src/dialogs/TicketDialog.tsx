@@ -5,12 +5,12 @@ import { createTicket, updateTicket, deleteTicket, Ticket } from "../utils/backe
 // Define props interface
 interface TicketDialogProps {
   action: "create" | "update";
-  onCancel: () => void;
+  onClose: () => void;
   defaultValues?: Partial<Ticket>;
 }
 
 // Component
-const TicketDialog: React.FC<TicketDialogProps> = ({ action, onCancel, defaultValues }) => {
+const TicketDialog: React.FC<TicketDialogProps> = ({ action, onClose, defaultValues }) => {
   // Function to handle ticket creation
   const handleCreate = async (data: Record<string, any>) => {
     const { title, description, category_id, subcategory_id, deadline } = data;
@@ -26,7 +26,7 @@ const TicketDialog: React.FC<TicketDialogProps> = ({ action, onCancel, defaultVa
     } catch (error) {
       console.error("Error creating ticket:", error);
     }
-    onCancel();
+    onClose();
   };
 
   const handleUpdate = async (data: Record<string, any>) => {
@@ -52,7 +52,7 @@ const TicketDialog: React.FC<TicketDialogProps> = ({ action, onCancel, defaultVa
     } catch (error) {
       console.error("Error updating ticket:", error);
     }
-    onCancel();
+    onClose();
   };
 
 
@@ -73,7 +73,7 @@ const TicketDialog: React.FC<TicketDialogProps> = ({ action, onCancel, defaultVa
     } catch (error) {
       console.error("Error deleting ticket:", error);
     } finally {
-      onCancel();  // Close the modal or reset UI state
+      onClose();  // Close the modal or reset UI state
     }
   };
   // Fields for dialog form
@@ -94,7 +94,7 @@ const TicketDialog: React.FC<TicketDialogProps> = ({ action, onCancel, defaultVa
       onCreate={handleCreate}
       onUpdate={handleUpdate}
       onDelete={handleDelete}
-      onCancel={onCancel}
+      onCancel={onClose}
     />
   );
 };

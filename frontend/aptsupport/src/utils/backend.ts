@@ -24,6 +24,49 @@ interface Ticket {
     resolved: boolean;
 }
 
+// Update Category
+async function updateCategory(categoryId: number, name: string): Promise<Category> {
+    const url = `${BASE_URL}/categories/${categoryId}`;
+    const payload = { name };
+    const response = await axios.put<Category>(url, payload);
+    return response.data;
+}
+
+// Delete Category
+async function deleteCategory(categoryId: number): Promise<void> {
+    const url = `${BASE_URL}/categories/${categoryId}`;
+    await axios.delete(url);
+}
+
+// Update Subcategory
+async function updateSubcategory(subcategoryId: number, name: string, categoryId: number): Promise<Subcategory> {
+    const url = `${BASE_URL}/subcategories/${subcategoryId}`;
+    const payload = { name, category_id: categoryId };
+    const response = await axios.put<Subcategory>(url, payload);
+    return response.data;
+}
+
+// Delete Subcategory
+async function deleteSubcategory(subcategoryId: number): Promise<void> {
+    const url = `${BASE_URL}/subcategories/${subcategoryId}`;
+    await axios.delete(url);
+}
+
+// Fetch Tickets by Status
+async function fetchTicketsByStatus(status: string): Promise<Ticket[]> {
+    const url = `${BASE_URL}/tickets/status/${status}`;
+    const response = await axios.get<Ticket[]>(url);
+    return response.data;
+}
+
+// Fetch Overdue Tickets
+async function fetchOverdueTickets(): Promise<Ticket[]> {
+    const url = `${BASE_URL}/tickets/overdue/`;
+    const response = await axios.get<Ticket[]>(url);
+    return response.data;
+}
+
+// Existing Methods
 async function createCategory(name: string): Promise<Category> {
     const url = `${BASE_URL}/categories/`;
     const payload = { name };
@@ -67,7 +110,6 @@ async function updateTicket(
     return response.data;
 }
 
-
 async function deleteTicket(ticketId: number): Promise<void> {
     const url = `${BASE_URL}/tickets/${ticketId}`;
     await axios.delete(url);
@@ -95,8 +137,14 @@ export {
     createCategory,
     createSubcategory,
     createTicket,
+    updateCategory,
+    deleteCategory,
+    updateSubcategory,
+    deleteSubcategory,
     updateTicket,
     deleteTicket,
+    fetchTicketsByStatus,
+    fetchOverdueTickets,
     fetchCategories,
     fetchSubcategories,
     fetchTickets,

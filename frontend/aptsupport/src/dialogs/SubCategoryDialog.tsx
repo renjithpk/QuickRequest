@@ -1,39 +1,64 @@
 import React from "react";
 import { Dialog, Field } from "../base/Dialog.tsx";
-import { Subcategory } from "../utils/backend.ts";
+import { 
+  Subcategory, 
+  createSubcategory, 
+  updateSubcategory, 
+  deleteSubcategory 
+} from "../utils/backend.ts";
 
 // Define props interface
 interface SubCategoryDialogProps {
   action: "create" | "update";
-  onCancel: () => void;
+  onClose: () => void;
   defaultValues?: Partial<Subcategory>;
+  onSuccess?: () => void;  // Optional success callback
 }
 
 // Component
-const SubCategoryDialog: React.FC<SubCategoryDialogProps> = ({ action, onCancel, defaultValues }) => {
+const SubCategoryDialog: React.FC<SubCategoryDialogProps> = ({ action, onClose, defaultValues, onSuccess }) => {
   // Function to handle subcategory creation
-  const handleCreate = (data: Record<string, any>) => {
-    console.log("Add New Subcategory:", data);
-    onCancel()
+  const handleCreate = async (data: Record<string, any>) => {
+    try {
+      await createSubcategory(data.name, data.category_id);
+      console.log("Subcategory Created:", data);
+      onSuccess?.();  // Trigger success callback if provided
+      onClose();
+    } catch (error) {
+      console.error("Failed to create subcategory:", error);
+    }
   };
 
   // Function to handle subcategory update
-  const handleUpdate = (data: Record<string, any>) => {
-    console.log("Update Subcategory:", data);
-    onCancel()
+  const handleUpdate = async (data: Record<string, any>) => {
+    if (!defaultValues?.id) return;
+    try {
+      await updateSubcategory(defaultValues.id, data.name, data.category_id);
+      console.log("Subcategory Updated:", data);
+      onSuccess?.();  // Trigger success callback if provided
+      onClose();
+    } catch (error) {
+      console.error("Failed to update subcategory:", error);
+    }
   };
 
   // Function to handle subcategory deletion
-  const handleDelete = (data: Record<string, any>) => {
-    console.log("Delete Subcategory:", data);
-    onCancel()
+  const handleDelete = async () => {
+    if (!defaultValues?.id) return;
+    try {
+      await deleteSubcategory(defaultValues.id);
+      console.log("Subcategory Deleted:", defaultValues);
+      onSuccess?.();  // Trigger success callback if provided
+      onClose();
+    } catch (error) {
+      console.error("Failed to delete subcategory:", error);
+    }
   };
 
   const dialogFields: Field[] = [
     { name: "name", label: "Name", type: "text", required: true, default: defaultValues?.name },
     { name: "category_id", label: "Category ID", type: "number", required: true, default: defaultValues?.category_id },
   ];
-
 
   return (
     <Dialog
@@ -43,7 +68,7 @@ const SubCategoryDialog: React.FC<SubCategoryDialogProps> = ({ action, onCancel,
       onUpdate={handleUpdate}
       onDelete={handleDelete}
       action={action}
-      onCancel={onCancel}
+      onCancel={onClose}
     />
   );
 };

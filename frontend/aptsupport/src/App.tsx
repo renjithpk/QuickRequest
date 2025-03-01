@@ -31,7 +31,7 @@ const App: React.FC = () => {
     setDialogData({ type, action, defaultValues });
   };
 
-  const handleDialogCancel = () => {
+  const handleDialogClose = () => {
     setDialogData(null);
     if (dialogData?.type === "ticket") {
       setReloadTickets(prev => !prev);
@@ -85,13 +85,13 @@ const App: React.FC = () => {
       )}
 
       {dialogData && dialogData.type === "ticket" && (
-        <TicketDialog action={dialogData.action} onCancel={handleDialogCancel} defaultValues={dialogData.defaultValues as Partial<Ticket>} />
+        <TicketDialog action={dialogData.action} onClose={handleDialogClose} defaultValues={dialogData.defaultValues as Partial<Ticket>} />
       )}
       {dialogData && dialogData.type === "category" && (
-        <CategoryDialog action={dialogData.action} onCancel={handleDialogCancel} defaultValues={dialogData.defaultValues as Partial<Category>} />
+        <CategoryDialog action={dialogData.action} onClose={handleDialogClose} defaultValues={dialogData.defaultValues as Partial<Category>} />
       )}
       {dialogData && dialogData.type === "subcategory" && (
-        <SubCategoryDialog action={dialogData.action} onCancel={handleDialogCancel} defaultValues={dialogData.defaultValues as Partial<Subcategory>} />
+        <SubCategoryDialog action={dialogData.action} onClose={handleDialogClose} defaultValues={dialogData.defaultValues as Partial<Subcategory>} />
       )}
     </div>
   );
