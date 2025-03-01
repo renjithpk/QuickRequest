@@ -3,12 +3,12 @@ import Dialog from "./Dialog.tsx";
 
 // Define props interface
 interface SubCategoryDialogProps {
-  mode: "create" | "update";
+  action: "create" | "update";
   onCancel: () => void;
 }
 
 // Component
-const SubCategoryDialog: React.FC<SubCategoryDialogProps> = ({ mode, onCancel }) => {
+const SubCategoryDialog: React.FC<SubCategoryDialogProps> = ({ action, onCancel }) => {
   // Function to handle subcategory creation
   const handleCreate = (data: Record<string, any>) => {
     console.log("Add New Subcategory:", data);
@@ -32,14 +32,13 @@ const SubCategoryDialog: React.FC<SubCategoryDialogProps> = ({ mode, onCancel })
 
   return (
     <Dialog
-      title={mode === "create" ? "Create Subcategory" : "Update Subcategory"}
+      title={action === "create" ? "Create Subcategory" : "Update Subcategory"}
       fields={dialogFields}
       onCreate={handleCreate}
       onUpdate={handleUpdate}
       onDelete={handleDelete}
-      mode={mode}
+      action={action}
       onCancel={onCancel}
-      resource="subcategory"
     />
   );
 };

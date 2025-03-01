@@ -3,12 +3,12 @@ import Dialog from "./Dialog.tsx";
 
 // Define props interface
 interface CategoryDialogProps {
-  mode: "create" | "update";
+  action: "create" | "update";
   onCancel: () => void;
 }
 
 // Component
-const CategoryDialog: React.FC<CategoryDialogProps> = ({ mode, onCancel }) => {
+const CategoryDialog: React.FC<CategoryDialogProps> = ({ action, onCancel }) => {
   // Function to handle category creation
   const handleCreate = (data: Record<string, any>) => {
     console.log("Add New Category:", data);
@@ -27,13 +27,12 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ mode, onCancel }) => {
 
   return (
     <Dialog
-      title={mode === "create" ? "Create Category" : "Update Category"}
+      title={action === "create" ? "Create Category" : "Update Category"}
       fields={dialogFields}
       onCreate={handleCreate}
       onUpdate={handleUpdate}
       onCancel={onCancel}
-      mode={mode}
-      resource="category"
+      action={action}
     />
   );
 };

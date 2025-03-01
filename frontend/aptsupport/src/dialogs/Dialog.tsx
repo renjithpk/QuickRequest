@@ -1,5 +1,5 @@
-import React from 'react';
-import './Dialog.css';
+import React from "react";
+import "./Dialog.css";
 
 interface Field {
   name: string;
@@ -11,26 +11,33 @@ interface Field {
 }
 
 interface DialogProps {
-  action: 'create' | 'update';
+  action: "create" | "update";
   onCancel: () => void;
-  onCreate?: (data: Record<string, any>, resource: string) => void;
-  onUpdate?: (data: Record<string, any>, resource: string) => void;
-  onDelete?: (resource: string) => void;
+  onCreate?: (data: Record<string, any>) => void;
+  onUpdate?: (data: Record<string, any>) => void;
+  onDelete?: (data: Record<string, any>) => void;
   title: string;
   fields: Field[];
-  resource: string;
 }
 
-const Dialog: React.FC<DialogProps> = ({ action, onCancel, onCreate, onUpdate, onDelete, title, fields, resource }) => {
+const Dialog: React.FC<DialogProps> = ({ action, onCancel, onCreate, onUpdate, onDelete, title, fields }) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
-    if (action === 'create' && onCreate) {
-      onCreate(data, resource);
-    } else if (action === 'update' && onUpdate) {
-      onUpdate(data, resource);
+    if (action === "create" && onCreate) {
+      onCreate(data);
+    } else if (action === "update" && onUpdate) {
+      onUpdate(data);
+    }
+  };
+
+  const handleDelete = () => {
+    const formData = new FormData(document.querySelector("form")!);
+    const data = Object.fromEntries(formData.entries());
+    if (onDelete) {
+      onDelete(data);
     }
   };
 
@@ -47,7 +54,7 @@ const Dialog: React.FC<DialogProps> = ({ action, onCancel, onCreate, onUpdate, o
                   type={field.type}
                   name={field.name}
                   id={field.name}
-                  defaultValue={field.default || ''}
+                  defaultValue={field.default || ""}
                   required={field.required}
                   className="dialog-input"
                 />
@@ -57,10 +64,10 @@ const Dialog: React.FC<DialogProps> = ({ action, onCancel, onCreate, onUpdate, o
           ))}
           <div className="dialog-actions">
             <button type="button" onClick={onCancel} className="cancel-button">Cancel</button>
-            {action === 'create' && <button type="submit" className="create-button">Create</button>}
-            {action === 'update' && <button type="submit" className="update-button">Update</button>}
-            {action === 'update' && onDelete && (
-              <button type="button" onClick={() => onDelete(resource)} className="delete-button">Delete</button>
+            {action === "create" && <button type="submit" className="create-button">Create</button>}
+            {action === "update" && <button type="submit" className="update-button">Update</button>}
+            {action === "update" && onDelete && (
+              <button type="button" onClick={handleDelete} className="delete-button">Delete</button>
             )}
           </div>
         </form>
