@@ -35,11 +35,10 @@ def update_ticket(db: Session, ticket_id: int, ticket_update: TicketUpdate):
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")
     
-    if ticket_update.status is not None:
-        ticket.status = ticket_update.status
-    if ticket_update.resolved is not None:
-        ticket.resolved = ticket_update.resolved
-    
+    update_data = ticket_update.dict(exclude_unset=True)  # Get only fields that were provided in the request
+    for field, value in update_data.items():
+        setattr(ticket, field, value)  # Update each field dynamically
+
     db.commit()
     db.refresh(ticket)
     return ticket

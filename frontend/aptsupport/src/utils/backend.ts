@@ -51,12 +51,22 @@ async function createTicket(
     return response.data;
 }
 
-async function updateTicket(ticketId: number, status: string, resolved: boolean): Promise<Ticket> {
+async function updateTicket(
+    ticketId: number,
+    status?: string,
+    resolved?: boolean,
+    title?: string,
+    description?: string,
+    categoryId?: number,
+    subcategoryId?: number,
+    deadline?: string
+): Promise<Ticket> {
     const url = `${BASE_URL}/tickets/${ticketId}`;
-    const payload = { status, resolved };
+    const payload = { status, resolved, title, description, category_id: categoryId, subcategory_id: subcategoryId, deadline };
     const response = await axios.put<Ticket>(url, payload);
     return response.data;
 }
+
 
 async function deleteTicket(ticketId: number): Promise<void> {
     const url = `${BASE_URL}/tickets/${ticketId}`;

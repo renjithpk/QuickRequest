@@ -32,6 +32,7 @@ const TicketsTable: React.FC<TicketsTableProps> = ({ onRowClick }) => {
   }, []);
 
   const columns: Column[] = [
+    { id: "id", header: "ID", accessorKey: "id" },
     { id: "title", header: "Title", accessorKey: "title" },
     { id: "description", header: "Description", accessorKey: "description" },
     { id: "category_id", header: "Category ID", accessorKey: "category_id" },

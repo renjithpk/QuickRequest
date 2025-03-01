@@ -17,5 +17,10 @@ class TicketCreate(BaseModel):
     deadline: datetime
 
 class TicketUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    category_id: Optional[int] = None
+    subcategory_id: Optional[int] = None
+    deadline: Optional[datetime] = None
     status: Optional[str] = None
     resolved: Optional[bool] = None

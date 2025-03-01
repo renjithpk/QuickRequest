@@ -1,6 +1,6 @@
 import React from "react";
-import {Dialog, Field} from "../base/Dialog.tsx";
-import { createTicket, updateTicket, Ticket } from "../utils/backend.ts";
+import { Dialog, Field } from "../base/Dialog.tsx";
+import { createTicket, updateTicket, deleteTicket, Ticket } from "../utils/backend.ts";
 
 // Define props interface
 interface TicketDialogProps {
@@ -29,10 +29,25 @@ const TicketDialog: React.FC<TicketDialogProps> = ({ action, onCancel, defaultVa
     onCancel();
   };
 
-  // Function to handle ticket update
   const handleUpdate = async (data: Record<string, any>) => {
+    if (!data.id) {
+      console.error("Missing ticket ID!");
+      return;
+    }
+
+    console.log("Ticket ID:", data.id);  // Debug log
+
     try {
-      const response = await updateTicket(data.id, data.status, data.resolved);
+      const response = await updateTicket(
+        data.id,
+        data.status ?? undefined,
+        data.resolved ?? undefined,
+        data.title ?? undefined,
+        data.description ?? undefined,
+        data.category_id ?? undefined,
+        data.subcategory_id ?? undefined,
+        data.deadline ?? undefined
+      );
       console.log("Ticket updated:", response);
     } catch (error) {
       console.error("Error updating ticket:", error);
@@ -40,13 +55,30 @@ const TicketDialog: React.FC<TicketDialogProps> = ({ action, onCancel, defaultVa
     onCancel();
   };
 
-  // Function to handle ticket deletion (if needed)
-  const handleDelete = (data: Record<string, any>) => {
-    console.log("Delete Ticket:", data);
-  };
 
+  // Function to handle ticket deletion (if needed)
+  // Function to handle ticket deletion (with improved error handling and logging)
+  const handleDelete = async (data: Record<string, any>) => {
+    console.log("Attempting to delete ticket:", data);  // Log the input data
+
+    if (!data.id) {
+      console.error("Missing ticket ID!");
+      return;
+    }
+
+    try {
+      console.log(`Sending DELETE request for ticket ID: ${data.id}`);
+      await deleteTicket(data.id);
+      console.log(`Successfully deleted ticket ID: ${data.id}`);
+    } catch (error) {
+      console.error("Error deleting ticket:", error);
+    } finally {
+      onCancel();  // Close the modal or reset UI state
+    }
+  };
   // Fields for dialog form
   const dialogFields: Field[] = [
+    { name: "id", label: "ID", type: "number", required: true, default: defaultValues?.id },
     { name: "title", label: "Title", type: "text", required: true, default: defaultValues?.title },
     { name: "description", label: "Description", type: "text", required: true, default: defaultValues?.description },
     { name: "category_id", label: "Category ID", type: "number", required: true, default: defaultValues?.category_id },
