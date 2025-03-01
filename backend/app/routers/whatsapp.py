@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 import os
 import requests
 from app.database import get_db
+from app.config import Config
 from app.services.whatsapp_handler import process_whatsapp_message  # Import from new module
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -11,11 +12,7 @@ import json
 
 
 # Load sensitive information from environment variables
-WHATSAPP_VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN", "default_verification_token")
-WHATSAPP_ACCESS_TOKEN = os.getenv("WHATSAPP_ACCESS_TOKEN", "default_access_token")
-WHATSAPP_PHONE_ID = os.getenv("WHATSAPP_PHONE_ID", "your_phone_number_id")
-WHATSAPP_API_URL = f"https://graph.facebook.com/v18.0/{WHATSAPP_PHONE_ID}/messages"
-
+ 
 router = APIRouter()
 
 # Webhook Verification (Meta requires this)
@@ -23,10 +20,10 @@ router = APIRouter()
 def verify_whatsapp_webhook(request: Request):
     mode = request.query_params.get("hub.mode")
     token = request.query_params.get("hub.verify_token")
-    print(WHATSAPP_VERIFY_TOKEN)
+    print(Config.get("whatsapp_verify_token"))
     challenge = request.query_params.get("hub.challenge")
 
-    if mode == "subscribe" and token == WHATSAPP_VERIFY_TOKEN:
+    if mode == "subscribe" and token == Config.get("whatsapp_verify_token"):
         return int(challenge)  # Meta requires this response
     raise HTTPException(status_code=403, detail="Verification failed")
 
@@ -53,14 +50,14 @@ async def receive_whatsapp_message(request: Request, db: Session = Depends(get_d
 def send_whatsapp_message(payload):
     """Send a WhatsApp message via the WhatsApp Cloud API with error handling and logging."""
     headers = {
-        "Authorization": f"Bearer {WHATSAPP_ACCESS_TOKEN}",
+        "Authorization": f"Bearer {Config.get('whatsapp_access_token')}",
         "Content-Type": "application/json",
     }
     
     try:
 
         logger.info(f"Sending WhatsApp message: {payload}")
-        response = requests.post(WHATSAPP_API_URL, headers=headers, json=payload, timeout=10)
+        response = requests.post(Config.get('whatsapp_api_url'), headers=headers, json=payload, timeout=10)
         
         if response.status_code == 200:
             logger.info(f"WhatsApp message sent successfully: {response.json()}")

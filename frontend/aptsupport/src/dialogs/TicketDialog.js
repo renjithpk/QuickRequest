@@ -30,6 +30,10 @@ const TicketDialog = ({action, onCancel }) => {
     }
   };
 
+  const handleDelete = (data) => {
+    console.log('Update Subcategory:', data);
+  };
+  
   const dialogFields = [
     { name: 'title', label: 'Title', type: 'text', required: true },
     { name: 'description', label: 'Description', type: 'text', required: true },
@@ -45,6 +49,7 @@ const TicketDialog = ({action, onCancel }) => {
       fields={dialogFields}
       onCreate={handleCreate}
       onUpdate={handleUpdate}
+      onDelete={handleDelete}
       onCancel={onCancel}
     />
   );

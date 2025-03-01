@@ -3,10 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
 from app.routers import categories, subcategories, tickets
 from app.routers.whatsapp import router as whatsapp_router
+from app.config import Config
 
 # FastAPI instance
 app = FastAPI()
 
+Config.initialize("config/settings.yaml", lambda: print("Config updated!"))
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Adjust as needed

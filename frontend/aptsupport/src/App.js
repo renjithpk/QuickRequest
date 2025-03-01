@@ -27,6 +27,7 @@ function App() {
 
   const handleTicketSelection = (ticket) => {
     console.log('Selected ticket:', ticket);
+    openDialog('update', 'ticket')
   };
 
   const handleDialogCancel = () => {

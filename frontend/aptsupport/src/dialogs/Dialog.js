@@ -19,7 +19,7 @@ import './Dialog.css';
 // - data: the data to pass to the onCreate or onUpdate function.
 // - resource: the resource type (e.g., 'category', 'subcategory').
 
-const Dialog = ({ action, onCancel, onCreate, onUpdate, title, fields, data, resource }) => {
+const Dialog = ({ action, onCancel, onCreate, onUpdate, onDelete, title, fields, resource }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -39,21 +39,25 @@ const Dialog = ({ action, onCancel, onCreate, onUpdate, title, fields, data, res
         <form onSubmit={handleSubmit}>
           {fields.map((field, index) => (
             <div key={index} className="dialog-field">
-              <label htmlFor={field.name}>{field.label}</label>
-              <input
-                type={field.type}
-                name={field.name}
-                id={field.name}
-                defaultValue={field.default || ''}
-                required={field.required}
-              />
+              <div className="dialog-field-container">
+                <label htmlFor={field.name} className="dialog-label">{field.label}</label>
+                <input
+                  type={field.type}
+                  name={field.name}
+                  id={field.name}
+                  defaultValue={field.default || ''}
+                  required={field.required}
+                  className="dialog-input"
+                />
+              </div>
               {field.helpText && <small>{field.helpText}</small>}
             </div>
           ))}
           <div className="dialog-actions">
-            <button type="button" onClick={onCancel}>Cancel</button>
-            {action === 'create' && <button type="submit">Create</button>}
-            {action === 'update' && <button type="submit">Update</button>}
+            <button type="button" onClick={onCancel} className="cancel-button">Cancel</button>
+            {action === 'create' && <button type="submit" className="create-button">Create</button>}
+            {action === 'update' && <button type="submit" className="update-button">Update</button>}
+            {action === 'update' && onDelete && <button type="button" onClick={() => onDelete(resource)} className="delete-button">Delete</button>}
           </div>
         </form>
       </div>

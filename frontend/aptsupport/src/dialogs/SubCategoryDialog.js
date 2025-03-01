@@ -10,6 +10,10 @@ const SubCategoryDialog = ({ mode,onCancel }) => {
     console.log('Update Subcategory:', data);
   };
 
+  const handleDelete = (data) => {
+    console.log('Update Subcategory:', data);
+  };
+
   const dialogFields = [
     { name: 'name', label: 'Name', type: 'text', required: true },
     { name: 'description', label: 'Description', type: 'text', required: true },
@@ -21,6 +25,7 @@ const SubCategoryDialog = ({ mode,onCancel }) => {
       fields={dialogFields}
       onCreate={handleCreate}
       onUpdate={handleUpdate}
+      onDelete={handleDelete}
       mode={mode}
       onCancel={onCancel}
       resource="subcategory"

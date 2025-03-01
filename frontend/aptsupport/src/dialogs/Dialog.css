@@ -12,29 +12,87 @@
 
 .dialog {
   background: white;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 24px;
+  border-radius: 10px;
   width: 400px;
-  max-width: 100%;
+  max-width: 90%;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .dialog-field {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
-.dialog-field label {
-  display: block;
-  margin-bottom: 5px;
+.dialog-field-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.dialog-field input {
-  width: 100%;
+.dialog-label {
+  width: 30%;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.dialog-input {
+  width: 70%;
   padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
   box-sizing: border-box;
 }
 
 .dialog-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+button {
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.cancel-button {
+  background-color: #ddd;
+  color: #333;
+}
+
+.cancel-button:hover {
+  background-color: #bbb;
+}
+
+.create-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.create-button:hover {
+  background-color: #0056b3;
+}
+
+.update-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.update-button:hover {
+  background-color: #1e7e34;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #b02a37;
 }
