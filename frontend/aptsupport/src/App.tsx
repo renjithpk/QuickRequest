@@ -60,20 +60,41 @@ const App: React.FC = () => {
       <header className="App-header">
         <h2>Support Tickets Management</h2>
       </header>
-      <div className="app-controls">
-        <button onClick={toggleConfigView}>
-          {showConfig ? "Hide Configuration" : "Show Configuration"}
-        </button>
-        <button onClick={() => openDialog("create", "ticket")}>Add New Ticket</button>
-        <button onClick={() => openDialog("create", "category")}>Add New Category</button>
-        <button onClick={() => openDialog("create", "subcategory")}>Add New Subcategory</button>
-      </div>
-      {showConfig && <>
-        <CategoryTable onRowClick={handleCategorySelection}/>
-        <SubCategoryTable onRowClick={handleSubcategorySelection}/>
-      </>} 
-      {!showConfig && <TicketsTable onRowClick={handleTicketSelection} />}
+
       
+      <div className="app-controls">
+        <div>
+          <button onClick={toggleConfigView}>
+            {showConfig ? "View Tickets" : "View Categories"}
+          </button>
+        </div>
+
+        <label>Actions :</label>
+        <div>
+          {!showConfig && (
+            <button onClick={() => openDialog("create", "ticket")}>
+              Add New Ticket
+            </button>
+          )}
+          {showConfig && (
+            <>
+              <button onClick={() => openDialog("create", "category")}>
+                Add New Category
+              </button>
+              <button onClick={() => openDialog("create", "subcategory")}>
+                Add New Subcategory
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {showConfig && <>
+        <CategoryTable onRowClick={handleCategorySelection} />
+        <SubCategoryTable onRowClick={handleSubcategorySelection} />
+      </>}
+      {!showConfig && <TicketsTable onRowClick={handleTicketSelection} />}
+
       {dialogData && dialogData.type === "ticket" && (
         <TicketDialog action={dialogData.action} onCancel={handleDialogCancel} defaultValues={dialogData.defaultValues as Partial<Ticket>} />
       )}
