@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { fetchTickets, Ticket } from "../utils/backend.ts";
+import { fetchTickets, fetchCategories, fetchSubcategories, Ticket, Category, Subcategory } from "../utils/backend.ts";
 import TableView from "../base/Table.tsx";
 
 // Define column type
 interface Column {
   id: string;
   header: string;
-  accessorKey: keyof Ticket;
+  accessorKey: keyof Ticket | "category" | "subcategory";  // Include "category" and "subcategory" as valid accessors
 }
 
 // Define component props
@@ -17,8 +17,11 @@ interface TicketsTableProps {
 
 const TicketsTable: React.FC<TicketsTableProps> = ({ onRowClick, reloadTrigger }) => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [categories, setCategories] = useState<Record<number, Category>>({});
+  const [subcategories, setSubcategories] = useState<Record<number, Subcategory>>({});
 
-  const getTickets = async () => {    // Extracted getTickets to a separate function
+  // Fetch tickets
+  const getTickets = async () => {
     try {
       const data: Ticket[] = await fetchTickets();
       setTickets(data);
@@ -27,22 +30,61 @@ const TicketsTable: React.FC<TicketsTableProps> = ({ onRowClick, reloadTrigger }
     }
   };
 
+  // Fetch categories
+  const getCategories = async () => {
+    try {
+      const data: Category[] = await fetchCategories();
+      const categoriesMap = data.reduce((acc, category) => {
+        acc[category.id] = category;
+        return acc;
+      }, {} as Record<number, Category>);
+      setCategories(categoriesMap);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  // Fetch subcategories
+  const getSubcategories = async () => {
+    try {
+      const data: Subcategory[] = await fetchSubcategories();
+      const subcategoriesMap = data.reduce((acc, subcategory) => {
+        acc[subcategory.id] = subcategory;
+        return acc;
+      }, {} as Record<number, Subcategory>);
+      setSubcategories(subcategoriesMap);
+    } catch (error) {
+      console.error("Error fetching subcategories:", error);
+    }
+  };
+
   useEffect(() => {
-    getTickets();  // Initial fetch
+    getTickets();
+    getCategories();      // Fetch categories on mount
+    getSubcategories();   // Fetch subcategories on mount
   }, []);
 
   useEffect(() => {
     if (reloadTrigger !== undefined) {
-      getTickets();  // Re-fetch when reloadTrigger changes
+      getTickets();
+      getCategories();      // Re-fetch categories when reloadTrigger changes
+      getSubcategories();   // Re-fetch subcategories when reloadTrigger changes
     }
   }, [reloadTrigger]);
+
+  // Transform tickets to include category and subcategory names
+  const ticketsWithDetails = tickets.map((ticket) => ({
+    ...ticket,
+    category: categories[ticket.category_id]?.name || "Unknown",
+    subcategory: subcategories[ticket.subcategory_id]?.name || "Unknown",
+  }));
 
   const columns: Column[] = [
     { id: "id", header: "ID", accessorKey: "id" },
     { id: "title", header: "Title", accessorKey: "title" },
     { id: "description", header: "Description", accessorKey: "description" },
-    { id: "category_id", header: "Category ID", accessorKey: "category_id" },
-    { id: "subcategory_id", header: "Subcategory ID", accessorKey: "subcategory_id" },
+    { id: "category", header: "Category", accessorKey: "category" },              // Updated column for category name
+    { id: "subcategory", header: "Subcategory", accessorKey: "subcategory" },     // Updated column for subcategory name
     { id: "deadline", header: "Deadline", accessorKey: "deadline" },
   ];
 
@@ -50,7 +92,7 @@ const TicketsTable: React.FC<TicketsTableProps> = ({ onRowClick, reloadTrigger }
     <div>
       <TableView
         columns={columns}
-        data={tickets}
+        data={ticketsWithDetails}  // Use transformed tickets with category and subcategory names
         onRowClick={onRowClick ? (row) => onRowClick(row.id) : undefined}
       />
     </div>
