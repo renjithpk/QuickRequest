@@ -1,13 +1,15 @@
 import React from "react";
 import "./Dialog.css";
 
- interface Field {
+// Extend Field interface to support dropdown options
+interface Field {
   name: string;
   label: string;
-  type: string;
+  type: "text" | "number" | "select" | "datetime-local";
   required: boolean;
   default?: string | number;
   helpText?: string;
+  options?: { label: string; value: string | number }[];  // New: Options for dropdown
 }
 
 interface DialogProps {
@@ -50,14 +52,31 @@ const Dialog: React.FC<DialogProps> = ({ action, onCancel, onCreate, onUpdate, o
             <div key={index} className="dialog-field">
               <div className="dialog-field-container">
                 <label htmlFor={field.name} className="dialog-label">{field.label}</label>
-                <input
-                  type={field.type}
-                  name={field.name}
-                  id={field.name}
-                  defaultValue={field.default || ""}
-                  required={field.required}
-                  className="dialog-input"
-                />
+                {field.type === "select" ? (
+                  <select
+                    name={field.name}
+                    id={field.name}
+                    defaultValue={field.default || ""}
+                    required={field.required}
+                    className="dialog-input"
+                  >
+                    {!field.default && <option value="">Select an option</option>}  {/* Show only if no default */}
+                    {field.options?.map((option, i) => (
+                      <option key={i} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type={field.type}
+                    name={field.name}
+                    id={field.name}
+                    defaultValue={field.default || ""}
+                    required={field.required}
+                    className="dialog-input"
+                  />
+                )}
               </div>
               {field.helpText && <small>{field.helpText}</small>}
             </div>
@@ -79,4 +98,4 @@ const Dialog: React.FC<DialogProps> = ({ action, onCancel, onCreate, onUpdate, o
 export {
   Field,
   Dialog
-} 
+};

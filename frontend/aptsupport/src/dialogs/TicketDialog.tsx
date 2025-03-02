@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog, Field } from "../base/Dialog.tsx";
-import { createTicket, updateTicket, deleteTicket, Ticket } from "../utils/backend.ts";
+import { 
+  createTicket, 
+  updateTicket, 
+  deleteTicket, 
+  fetchCategories, 
+  fetchSubcategories, 
+  Ticket, 
+  Category, 
+  Subcategory 
+} from "../utils/backend.ts";
 
 // Define props interface
 interface TicketDialogProps {
@@ -9,17 +18,44 @@ interface TicketDialogProps {
   defaultValues?: Partial<Ticket>;
 }
 
-// Component
 const TicketDialog: React.FC<TicketDialogProps> = ({ action, onClose, defaultValues }) => {
-  // Function to handle ticket creation
-  const handleCreate = async (data: Record<string, any>) => {
-    const { title, description, category_id, subcategory_id, deadline } = data;
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
 
-    if (!title || !description || !category_id || !subcategory_id || !deadline) {
+  // Fetch categories and subcategories
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const categoryData = await fetchCategories();
+        const subcategoryData = await fetchSubcategories();
+        setCategories(categoryData);
+        setSubcategories(subcategoryData);
+      } catch (error) {
+        console.error("Error fetching categories or subcategories:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Combine category and subcategory into a single dropdown option
+  const combinedOptions = subcategories.map((subcategory) => {
+    const category = categories.find((cat) => cat.id === subcategory.category_id);
+    return {
+      label: `${category?.name}: ${subcategory.name}`,
+      value: `${subcategory.category_id}-${subcategory.id}`
+    };
+  });
+
+  const handleCreate = async (data: Record<string, any>) => {
+    const { title, description, category_and_subcategory, deadline } = data;
+
+    if (!title || !description || !category_and_subcategory || !deadline) {
       console.error("All fields are required");
       return;
     }
 
+    const [category_id, subcategory_id] = category_and_subcategory.split("-");
+    
     try {
       const response = await createTicket(title, description, category_id, subcategory_id, deadline);
       console.log("Ticket created successfully:", response);
@@ -35,7 +71,7 @@ const TicketDialog: React.FC<TicketDialogProps> = ({ action, onClose, defaultVal
       return;
     }
 
-    console.log("Ticket ID:", data.id);  // Debug log
+    const [category_id, subcategory_id] = data.category_and_subcategory.split("-");
 
     try {
       const response = await updateTicket(
@@ -44,8 +80,8 @@ const TicketDialog: React.FC<TicketDialogProps> = ({ action, onClose, defaultVal
         data.resolved ?? undefined,
         data.title ?? undefined,
         data.description ?? undefined,
-        data.category_id ?? undefined,
-        data.subcategory_id ?? undefined,
+        category_id ?? undefined,
+        subcategory_id ?? undefined,
         data.deadline ?? undefined
       );
       console.log("Ticket updated:", response);
@@ -55,34 +91,35 @@ const TicketDialog: React.FC<TicketDialogProps> = ({ action, onClose, defaultVal
     onClose();
   };
 
-
-  // Function to handle ticket deletion (if needed)
-  // Function to handle ticket deletion (with improved error handling and logging)
   const handleDelete = async (data: Record<string, any>) => {
-    console.log("Attempting to delete ticket:", data);  // Log the input data
-
     if (!data.id) {
       console.error("Missing ticket ID!");
       return;
     }
 
     try {
-      console.log(`Sending DELETE request for ticket ID: ${data.id}`);
       await deleteTicket(data.id);
       console.log(`Successfully deleted ticket ID: ${data.id}`);
     } catch (error) {
       console.error("Error deleting ticket:", error);
     } finally {
-      onClose();  // Close the modal or reset UI state
+      onClose();
     }
   };
-  // Fields for dialog form
+
+  // Fields for dialog form with a combined dropdown for category and subcategory
   const dialogFields: Field[] = [
-    { name: "id", label: "ID", type: "number", required: true, default: defaultValues?.id },
+    { name: "id", label: "ID", type: "number", required: action === "update", default: defaultValues?.id },
     { name: "title", label: "Title", type: "text", required: true, default: defaultValues?.title },
     { name: "description", label: "Description", type: "text", required: true, default: defaultValues?.description },
-    { name: "category_id", label: "Category ID", type: "number", required: true, default: defaultValues?.category_id },
-    { name: "subcategory_id", label: "Subcategory ID", type: "number", required: true, default: defaultValues?.subcategory_id },
+    {
+      name: "category_and_subcategory",
+      label: "Category",
+      type: "select",
+      required: true,
+      default: defaultValues ? `${defaultValues.category_id}-${defaultValues.subcategory_id}` : "",
+      options: combinedOptions
+    },
     { name: "deadline", label: "Deadline", type: "datetime-local", required: true, default: defaultValues?.deadline },
   ];
 
