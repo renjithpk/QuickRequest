@@ -5,7 +5,7 @@ import TableView from "../base/Table.tsx";
 
 
 interface SubCategoryTableProps {
-  onRowClick?: (subcategory: Subcategory) => void;
+  onRowClick?: (id: number) => void;
   reloadTrigger?: boolean;
 }
 
@@ -36,7 +36,7 @@ const SubCategoryTable: React.FC<SubCategoryTableProps> = ({ onRowClick, reloadT
       <TableView
         columns={columns}
         data={subcategories}
-        onRowClick={onRowClick ? (row) => onRowClick(row as Subcategory) : undefined}
+        onRowClick={onRowClick ? (row) => onRowClick(row.id) : undefined}
       />
     </div>
   );

@@ -11,7 +11,7 @@ interface Column {
 
 // Define component props
 interface TicketsTableProps {
-  onRowClick?: (ticket: Ticket) => void;
+  onRowClick?: (id: number) => void;
   reloadTrigger?: boolean;
 }
 
@@ -51,7 +51,7 @@ const TicketsTable: React.FC<TicketsTableProps> = ({ onRowClick, reloadTrigger }
       <TableView
         columns={columns}
         data={tickets}
-        onRowClick={onRowClick ? (row) => onRowClick(row as Ticket) : undefined}
+        onRowClick={onRowClick ? (row) => onRowClick(row.id) : undefined}
       />
     </div>
   );

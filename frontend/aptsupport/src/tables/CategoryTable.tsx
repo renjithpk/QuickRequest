@@ -5,7 +5,7 @@ import TableView from "../base/Table.tsx";
 
 
 interface CategoryTableProps {
-  onRowClick?: (category: Category) => void;
+  onRowClick?: (id: number) => void;
   reloadTrigger?: boolean;
 }
 
@@ -36,7 +36,7 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ onRowClick, reloadTrigger
       <TableView
         columns={columns}
         data={categories}
-        onRowClick={onRowClick ? (row) => onRowClick(row as Category) : undefined}
+        onRowClick={onRowClick ? (row) => onRowClick(row.id) : undefined}
       />
     </div>
   );

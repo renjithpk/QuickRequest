@@ -6,7 +6,7 @@ import SubCategoryTable from "./tables/SubcategoryTable.tsx";
 import TicketDialog from "./dialogs/TicketDialog.tsx";
 import CategoryDialog from "./dialogs/CategoryDialog.tsx";
 import SubCategoryDialog from "./dialogs/SubCategoryDialog.tsx";
-import { Category, Subcategory, Ticket } from "./utils/backend.ts";
+import { Category, Subcategory, Ticket, fetchTicket, fetchCategory, fetchSubcategory } from "./utils/backend.ts";
 
 // Define types for dialogs
 type DialogType = "ticket" | "category" | "subcategory";
@@ -27,8 +27,26 @@ const App: React.FC = () => {
   const [reloadCategories, setReloadCategories] = useState(false);
   const [reloadSubCategories, setReloadSubCategories] = useState(false);
 
-  const openDialog = (action: DialogAction, type: DialogType, defaultValues?: DialogDefaultValues) => {
-    setDialogData({ type, action, defaultValues });
+  const openDialog = async (action: DialogAction, type: DialogType, id?: number) => {
+    try {
+      let defaultValues: DialogDefaultValues | undefined = undefined;
+
+      // Fetch detailed data if updating
+      if (action === "update" && id) {
+        if (type === "ticket") {
+          defaultValues = await fetchTicket(id);
+        } else if (type === "category") {
+          defaultValues = await fetchCategory(id);
+        } else if (type === "subcategory") {
+          defaultValues = await fetchSubcategory(id);
+        }
+      }
+
+      // Set dialog data with fetched details or empty for create
+      setDialogData({ type, action, defaultValues });
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
   };
 
   const handleDialogClose = () => {
@@ -42,7 +60,6 @@ const App: React.FC = () => {
     if (dialogData?.type === "subcategory") {
       setReloadSubCategories(prev => !prev);
     }
-
   };
 
   return (
@@ -73,14 +90,14 @@ const App: React.FC = () => {
 
       {activeTab === "tickets" && (
         <TicketsTable
-          onRowClick={(ticket) => openDialog("update", "ticket", ticket)}
+          onRowClick={(id) => openDialog("update", "ticket",id)}
           reloadTrigger={reloadTickets}   // Step 3: Pass reload state as a prop
         />
       )}
       {activeTab === "categories" && (
         <>
-          <CategoryTable onRowClick={(category) => openDialog("update", "category", category)} reloadTrigger={reloadCategories} />
-          <SubCategoryTable onRowClick={(subCategory) => openDialog("update", "subcategory", subCategory)} reloadTrigger={reloadSubCategories} />
+          <CategoryTable onRowClick={(id) => openDialog("update", "category", id)} reloadTrigger={reloadCategories} />
+          <SubCategoryTable onRowClick={(id) => openDialog("update", "subcategory", id)} reloadTrigger={reloadSubCategories} />
         </>
       )}
 

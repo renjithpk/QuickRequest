@@ -20,6 +20,10 @@ def create_ticket(db: Session, ticket: TicketCreate):
     db.refresh(new_ticket)
     return new_ticket
 
+def get_ticket_by_id(db: Session, ticket_id: int):
+    ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
+    return ticket
+
 def list_tickets(db: Session):
     return db.query(Ticket).all()
 
