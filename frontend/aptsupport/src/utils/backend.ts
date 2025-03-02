@@ -24,7 +24,13 @@ interface Ticket {
     resolved: boolean;
 }
 
-// Update Category
+// Fetch Single Category
+async function fetchCategory(categoryId: number): Promise<Category> {
+    const url = `${BASE_URL}/categories/${categoryId}`;
+    const response = await axios.get<Category>(url);
+    return response.data;
+}
+
 async function updateCategory(categoryId: number, name: string): Promise<Category> {
     const url = `${BASE_URL}/categories/${categoryId}`;
     const payload = { name };
@@ -32,13 +38,18 @@ async function updateCategory(categoryId: number, name: string): Promise<Categor
     return response.data;
 }
 
-// Delete Category
 async function deleteCategory(categoryId: number): Promise<void> {
     const url = `${BASE_URL}/categories/${categoryId}`;
     await axios.delete(url);
 }
 
-// Update Subcategory
+// Fetch Single Subcategory
+async function fetchSubcategory(subcategoryId: number): Promise<Subcategory> {
+    const url = `${BASE_URL}/subcategories/${subcategoryId}`;
+    const response = await axios.get<Subcategory>(url);
+    return response.data;
+}
+
 async function updateSubcategory(subcategoryId: number, name: string, categoryId: number): Promise<Subcategory> {
     const url = `${BASE_URL}/subcategories/${subcategoryId}`;
     const payload = { name, category_id: categoryId };
@@ -46,27 +57,30 @@ async function updateSubcategory(subcategoryId: number, name: string, categoryId
     return response.data;
 }
 
-// Delete Subcategory
 async function deleteSubcategory(subcategoryId: number): Promise<void> {
     const url = `${BASE_URL}/subcategories/${subcategoryId}`;
     await axios.delete(url);
 }
 
-// Fetch Tickets by Status
+// Fetch Single Ticket
+async function fetchTicket(ticketId: number): Promise<Ticket> {
+    const url = `${BASE_URL}/tickets/${ticketId}`;
+    const response = await axios.get<Ticket>(url);
+    return response.data;
+}
+
 async function fetchTicketsByStatus(status: string): Promise<Ticket[]> {
     const url = `${BASE_URL}/tickets/status/${status}`;
     const response = await axios.get<Ticket[]>(url);
     return response.data;
 }
 
-// Fetch Overdue Tickets
 async function fetchOverdueTickets(): Promise<Ticket[]> {
     const url = `${BASE_URL}/tickets/overdue/`;
     const response = await axios.get<Ticket[]>(url);
     return response.data;
 }
 
-// Existing Methods
 async function createCategory(name: string): Promise<Category> {
     const url = `${BASE_URL}/categories/`;
     const payload = { name };
@@ -137,18 +151,21 @@ export {
     createCategory,
     createSubcategory,
     createTicket,
-    updateCategory,
     deleteCategory,
-    updateSubcategory,
     deleteSubcategory,
-    updateTicket,
     deleteTicket,
-    fetchTicketsByStatus,
-    fetchOverdueTickets,
+    fetchCategory,
     fetchCategories,
+    fetchOverdueTickets,
+    fetchSubcategory,
     fetchSubcategories,
+    fetchTicket,
     fetchTickets,
-    Ticket,
+    fetchTicketsByStatus,
+    updateCategory,
+    updateSubcategory,
+    updateTicket,
     Category,
     Subcategory,
+    Ticket,
 };
